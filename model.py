@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict, Field, PrivateAttr
 class OrderLine(BaseModel):
     # OrderLine is a Value Object, should be immutable type. If they have different values, should be different objects.
     # Postel's Law - "Be liberal in what you accept, and conservative in what you emit".
-    model_config = ConfigDict(frozen=True, extra="ignore")
+    model_config = ConfigDict(from_attributes=True, frozen=True, extra="ignore")
 
     orderid: str
     sku: str
@@ -14,6 +14,8 @@ class OrderLine(BaseModel):
 
 
 class Batch(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     # Batch is an Entity, we can change their values and they are still recognizably the same thing.
     reference: str
     sku: str
