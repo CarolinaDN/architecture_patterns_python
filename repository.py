@@ -1,6 +1,7 @@
 import abc
 import model
 import orm
+from sqlmodel import col, select
 
 
 class AbstractRepository(abc.ABC):
@@ -21,8 +22,8 @@ class SqlAlchemyRepository(AbstractRepository):
         self.session.add(orm.Batches(**batch.model_dump()))
 
     def get(self, reference):
-        batch = self.session.query(orm.Batches).filter_by(reference=reference).one()
+        batch = self.session.exec(select(orm.Batches).where(orm.Batches.reference==reference)).one()
         return model.Batch.model_validate(batch)
 
     def list(self):
-        return self.session.query(orm.Batches).all()
+        return self.session.exec(select(orm.Batches)).all()

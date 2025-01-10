@@ -1,8 +1,6 @@
 import pytest
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, clear_mappers
-
-from orm import Base
+from sqlmodel import SQLModel, Session, create_engine
+import orm
 
 
 @pytest.fixture
@@ -13,9 +11,6 @@ def in_memory_db():
 
 @pytest.fixture
 def session(in_memory_db):
-    db = sessionmaker(autocommit=False, autoflush=False,bind=in_memory_db)()
-    Base.metadata.create_all(in_memory_db)
-    try:
-        yield db
-    finally:
-        db.close()
+    SQLModel.metadata.create_all(in_memory_db)
+    with Session(in_memory_db) as session:
+        yield session
