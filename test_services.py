@@ -49,20 +49,19 @@ def test_commits():
     repo = FakeRepository([batch])
     session = FakeSession()
 
+    services.add_batch("b1", "OMINOUS-MIRROR", 100, None, repo, session)
     services.allocate(line, repo, session)
     assert session.committed is True
 
 
 def test_deallocate_decrements_available_quantity():
     repo, session = FakeRepository([]), FakeSession()
-    # TODO: you'll need to implement the services.add_batch method
     services.add_batch("b1", "BLUE-PLINTH", 100, None, repo, session)
     line = model.OrderLine("o1", "BLUE-PLINTH", 10)
     services.allocate(line, repo, session)
     batch = repo.get(reference="b1")
     assert batch.available_quantity == 90
-    # services.deallocate(...
-    ...
+    services.deallocate(line, repo, session)
     assert batch.available_quantity == 100
 
 
